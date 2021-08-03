@@ -32,7 +32,7 @@ func Beghilosz(input string) string {
 		encoded_words := make([]string, len(words))
 		for i, word := range words {
 			word = strings.ToUpper(word)
-			if !(strings.HasPrefix(word, "#") || strings.HasPrefix(word, "@")) {
+			if !isSpecialWord(word) {
 				word = strings.Map(beghilosz_mapping, word)
 				word = reverse(word)
 			}
@@ -42,6 +42,12 @@ func Beghilosz(input string) string {
 		encoded_lines[lineIndex] = strings.Join(encoded_words, " ")
 	}
 	return strings.Join(reverseSlice(encoded_lines), "\n")
+}
+
+func isSpecialWord(word string) bool {
+	isHashtag := strings.HasPrefix(word, "#")
+	isUsername := strings.HasPrefix(word, "@")
+	return isHashtag || isUsername
 }
 
 func reverse(input string) string {
