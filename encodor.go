@@ -60,17 +60,15 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 			zap.Error(err))
 		return
 	}
-
-	// Special handling of start message
-	if update.Message.Text == startCommand {
-		update.Message.Text = "All those moments will be lost in time, like tears in rain."
-	}
-
 	logger.Info("New message received",
 		zap.Int("update_id", update.UpdateId),
 		zap.String("text", update.Message.Text),
 		zap.Int("chat_id", update.Message.Chat.Id),
 		zap.String("severity", "NOTICE"))
+	// Special handling of start message
+	if update.Message.Text == startCommand {
+		update.Message.Text = "All those moments will be lost in time, like tears in rain."
+	}
 	//BEGHILOSZ encode incomming message
 	encoded_text := Beghilosz(update.Message.Text)
 	// Send the punchline back to Telegram
