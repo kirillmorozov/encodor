@@ -28,6 +28,8 @@ type Chat struct {
 	Id int `json:"id"`
 }
 
+const startCommand = "/start"
+
 // parseTelegramRequest handles incoming update from the Telegram web hook
 func parseTelegramRequest(r *http.Request) (*Update, error) {
 	var update Update
@@ -46,6 +48,11 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("error parsing update, %s", err.Error())
 		return
+	}
+
+	// Special handling of start message
+	if update.Message.Text == startCommand {
+		update.Message.Text = "All those moments will be lost in time, like tears in rain."
 	}
 
 	//BEGHILOSZ encode incomming message
