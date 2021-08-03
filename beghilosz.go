@@ -25,19 +25,23 @@ func beghilosz_mapping(letter rune) rune {
 }
 
 func Beghilosz(input string) string {
-	words := strings.Fields(input)
-	encoded_words := make([]string, len(words))
-	for i, word := range words {
-		word = strings.ToUpper(word)
-		if !(strings.HasPrefix(word, "#") || strings.HasPrefix(word, "@")) {
-			word = strings.Map(beghilosz_mapping, word)
-			word = reverse(word)
+	lines := strings.Split(input, "\n")
+	encoded_lines := make([]string, len(lines))
+	for lineIndex, line := range lines {
+		words := strings.Fields(line)
+		encoded_words := make([]string, len(words))
+		for i, word := range words {
+			word = strings.ToUpper(word)
+			if !(strings.HasPrefix(word, "#") || strings.HasPrefix(word, "@")) {
+				word = strings.Map(beghilosz_mapping, word)
+				word = reverse(word)
+			}
+			encoded_words[i] = word
 		}
-		encoded_words[i] = word
+		encoded_words = reverseSlice(encoded_words)
+		encoded_lines[lineIndex] = strings.Join(encoded_words, " ")
 	}
-	encoded_words = reverseSlice(encoded_words)
-	output := strings.Join(encoded_words, " ")
-	return output
+	return strings.Join(reverseSlice(encoded_lines), "\n")
 }
 
 func reverse(input string) string {
