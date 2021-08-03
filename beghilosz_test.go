@@ -29,6 +29,15 @@ func TestBeghilosz(t *testing.T) {
 	}
 }
 
+func BenchmarkBeghilosz(b *testing.B) {
+	const test_string string = "word1.1 word1.2 @username1 #hashtag1\nword2.1 word2.2 @username2 #hashtag2"
+	b.Run("Multiline", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			Beghilosz(test_string)
+		}
+	})
+}
+
 func Test_isSpecialWord(t *testing.T) {
 	type args struct {
 		word string
