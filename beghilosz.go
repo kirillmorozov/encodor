@@ -34,7 +34,7 @@ func Beghilosz(input string) string {
 			word = strings.ToUpper(word)
 			if !isSpecialWord(word) {
 				word = strings.Map(beghilosz_mapping, word)
-				word = reverse(word)
+				word = reverseString(word)
 			}
 			encoded_words[i] = word
 		}
@@ -50,7 +50,7 @@ func isSpecialWord(word string) bool {
 	return isHashtag || isUsername
 }
 
-func reverse(input string) string {
+func reverseString(input string) string {
 	var result string
 	for _, letter := range input {
 		result = string(letter) + result
