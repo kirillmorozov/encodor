@@ -38,7 +38,6 @@ func Test_isSpecialWord(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
 		{name: "Hashtag", args: args{"#nofilter"}, want: true},
 		{name: "Username", args: args{"@username"}, want: true},
 		{name: "Regular word", args: args{"word"}, want: false},

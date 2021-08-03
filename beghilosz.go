@@ -4,8 +4,8 @@ import (
 	"strings"
 )
 
-func beghilosz_mapping(letter rune) rune {
-	var char_map = map[rune]rune{
+func beghiloszMapping(letter rune) rune {
+	var beghiloszRuneMap = map[rune]rune{
 		'B': '8',
 		'E': '3',
 		'G': '6',
@@ -16,32 +16,32 @@ func beghilosz_mapping(letter rune) rune {
 		'S': '5',
 		'Z': '2',
 	}
-	new_letter, exists := char_map[letter]
+	newLetter, exists := beghiloszRuneMap[letter]
 	if !exists {
 		return letter
 	} else {
-		return new_letter
+		return newLetter
 	}
 }
 
 func Beghilosz(input string) string {
 	lines := strings.Split(input, "\n")
-	encoded_lines := make([]string, len(lines))
+	encodedLines := make([]string, len(lines))
 	for lineIndex, line := range lines {
 		words := strings.Fields(line)
-		encoded_words := make([]string, len(words))
+		encodedWords := make([]string, len(words))
 		for i, word := range words {
 			word = strings.ToUpper(word)
 			if !isSpecialWord(word) {
-				word = strings.Map(beghilosz_mapping, word)
+				word = strings.Map(beghiloszMapping, word)
 				word = reverseString(word)
 			}
-			encoded_words[i] = word
+			encodedWords[i] = word
 		}
-		encoded_words = reverseSlice(encoded_words)
-		encoded_lines[lineIndex] = strings.Join(encoded_words, " ")
+		encodedWords = reverseSlice(encodedWords)
+		encodedLines[lineIndex] = strings.Join(encodedWords, " ")
 	}
-	return strings.Join(reverseSlice(encoded_lines), "\n")
+	return strings.Join(reverseSlice(encodedLines), "\n")
 }
 
 func isSpecialWord(word string) bool {
