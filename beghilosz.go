@@ -26,22 +26,20 @@ func beghiloszMapping(letter rune) rune {
 
 func Beghilosz(input string) string {
 	lines := strings.Split(input, "\n")
-	encodedLines := make([]string, len(lines))
 	for lineIndex, line := range lines {
 		words := strings.Fields(line)
-		encodedWords := make([]string, len(words))
-		for i, word := range words {
+		for wordIndex, word := range words {
 			word = strings.ToUpper(word)
 			if !isSpecialWord(word) {
 				word = strings.Map(beghiloszMapping, word)
 				word = reverseString(word)
 			}
-			encodedWords[i] = word
+			words[wordIndex] = word
 		}
-		encodedWords = reverseSlice(encodedWords)
-		encodedLines[lineIndex] = strings.Join(encodedWords, " ")
+		words = reverseSlice(words)
+		lines[lineIndex] = strings.Join(words, " ")
 	}
-	return strings.Join(reverseSlice(encodedLines), "\n")
+	return strings.Join(reverseSlice(lines), "\n")
 }
 
 func isSpecialWord(word string) bool {
