@@ -50,12 +50,12 @@ func isSpecialWord(word string) bool {
 	return isHashtag || isUsername
 }
 
-func reverseString(input string) string {
-	var result string
-	for _, letter := range input {
-		result = string(letter) + result
+func reverseString(s string) string {
+	rns := []rune(s)
+	for i, j := 0, len(rns)-1; i < j; i, j = i+1, j-1 {
+		rns[i], rns[j] = rns[j], rns[i]
 	}
-	return result
+	return string(rns)
 }
 
 func reverseSlice(input []string) []string {
