@@ -41,17 +41,17 @@ func isSpecialWord(word string) bool {
 	return isHashtag || isUsername
 }
 
-func reverseString(s string) string {
-	rns := []rune(s)
+func reverseString(str string) string {
+	rns := []rune(str)
 	for i, j := 0, len(rns)-1; i < j; i, j = i+1, j-1 {
 		rns[i], rns[j] = rns[j], rns[i]
 	}
 	return string(rns)
 }
 
-func reverseSlice(input []string) []string {
-	for i := 0; i < len(input)/2; i++ {
-		input[i], input[len(input)-1-i] = input[len(input)-1-i], input[i]
+func reverseSlice(slice []string) []string {
+	for i := 0; i < len(slice)/2; i++ {
+		slice[i], slice[len(slice)-1-i] = slice[len(slice)-1-i], slice[i]
 	}
-	return input
+	return slice
 }
