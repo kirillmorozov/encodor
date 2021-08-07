@@ -4,25 +4,26 @@ import (
 	"strings"
 )
 
-func Beghilosz(input string) string {
-	lines := strings.Split(input, "\n")
-	replacer := strings.NewReplacer(
-		"B", "8",
-		"E", "3",
-		"G", "6",
-		"H", "4",
-		"I", "1",
-		"L", "7",
-		"O", "0",
-		"S", "5",
-		"Z", "2",
-	)
+var beghiloszReplacer = strings.NewReplacer(
+	"B", "8",
+	"E", "3",
+	"G", "6",
+	"H", "4",
+	"I", "1",
+	"L", "7",
+	"O", "0",
+	"S", "5",
+	"Z", "2",
+)
+
+func Beghilosz(text string) string {
+	text = strings.ToUpper(text)
+	lines := strings.Split(text, "\n")
 	for lineIndex, line := range lines {
 		words := strings.Fields(line)
 		for wordIndex, word := range words {
-			word = strings.ToUpper(word)
 			if !isSpecialWord(word) {
-				word = replacer.Replace(word)
+				word = beghiloszReplacer.Replace(word)
 				word = reverseString(word)
 			}
 			words[wordIndex] = word
@@ -30,7 +31,8 @@ func Beghilosz(input string) string {
 		words = reverseSlice(words)
 		lines[lineIndex] = strings.Join(words, " ")
 	}
-	return strings.Join(reverseSlice(lines), "\n")
+	lines = reverseSlice(lines)
+	return strings.Join(lines, "\n")
 }
 
 func isSpecialWord(word string) bool {
