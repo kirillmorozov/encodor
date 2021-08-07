@@ -4,34 +4,25 @@ import (
 	"strings"
 )
 
-func beghiloszMapping(letter rune) rune {
-	var beghiloszRuneMap = map[rune]rune{
-		'B': '8',
-		'E': '3',
-		'G': '6',
-		'H': '4',
-		'I': '1',
-		'L': '7',
-		'O': '0',
-		'S': '5',
-		'Z': '2',
-	}
-	newLetter, exists := beghiloszRuneMap[letter]
-	if !exists {
-		return letter
-	} else {
-		return newLetter
-	}
-}
-
 func Beghilosz(input string) string {
 	lines := strings.Split(input, "\n")
+	replacer := strings.NewReplacer(
+		"B", "8",
+		"E", "3",
+		"G", "6",
+		"H", "4",
+		"I", "1",
+		"L", "7",
+		"O", "0",
+		"S", "5",
+		"Z", "2",
+	)
 	for lineIndex, line := range lines {
 		words := strings.Fields(line)
 		for wordIndex, word := range words {
 			word = strings.ToUpper(word)
 			if !isSpecialWord(word) {
-				word = strings.Map(beghiloszMapping, word)
+				word = replacer.Replace(word)
 				word = reverseString(word)
 			}
 			words[wordIndex] = word
