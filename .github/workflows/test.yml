@@ -9,6 +9,7 @@ on:
   pull_request:
 jobs:
   test:
+    runs-on: ubuntu-18.04
     name: Go setup
     steps:
       - uses: actions/checkout@v2
