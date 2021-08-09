@@ -51,7 +51,7 @@ func parseTelegramRequest(r *http.Request) (*Update, error) {
 
 // HandleTelegramWebHook sends a message back to the chat in encoded form
 func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
-	defer logger.Sync() // flushes buffer, if any
+	defer logger.Sync() //nolint:errcheck
 	// Parse incoming request
 	var update, err = parseTelegramRequest(r)
 	if err != nil {
