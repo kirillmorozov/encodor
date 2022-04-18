@@ -2,32 +2,34 @@ package encodor
 
 import (
 	"strings"
-)
-
-// beghiloszReplacer replace all runes according to beghilosz encoding.
-var beghiloszReplacer = strings.NewReplacer(
-	"B", "8",
-	"E", "3",
-	"G", "6",
-	"H", "4",
-	"I", "1",
-	"L", "7",
-	"O", "0",
-	"S", "5",
-	"Z", "2",
+	"sync"
 )
 
 // Beghilosz encode text to calculator spelling.
 // Hashtags(words beginning with '#') and mentions(words beginning with '@') are
 // left as is.
 func Beghilosz(text string) string {
+	var replacer = strings.NewReplacer(
+		"B", "8",
+		"E", "3",
+		"G", "6",
+		"H", "4",
+		"I", "1",
+		"L", "7",
+		"O", "0",
+		"S", "5",
+		"Z", "2",
+	)
 	text = strings.ToUpper(text)
 	lines := strings.Split(text, "\n")
-	for lineIndex, line := range lines {
-		words := strings.Fields(line)
+	var wg sync.WaitGroup
+	wg.Add(len(lines))
+	encodeLine := func(lineIndex int) {
+		defer wg.Done()
+		words := strings.Fields(lines[lineIndex])
 		for wordIndex, word := range words {
 			if !isSpecialWord(word) {
-				word = beghiloszReplacer.Replace(word)
+				word = replacer.Replace(word)
 				word = reverseString(word)
 			}
 			words[wordIndex] = word
@@ -35,6 +37,10 @@ func Beghilosz(text string) string {
 		words = reverseStringSlice(words)
 		lines[lineIndex] = strings.Join(words, " ")
 	}
+	for lineIndex := range lines {
+		go encodeLine(lineIndex)
+	}
+	wg.Wait()
 	lines = reverseStringSlice(lines)
 	return strings.Join(lines, "\n")
 }
