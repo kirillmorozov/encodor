@@ -6,7 +6,7 @@ import (
 	"github.com/kirillmorozov/encodor/utils"
 )
 
-func TestBeghilosz(t *testing.T) {
+func TestEncode(t *testing.T) {
 	type args struct {
 		input string
 	}
@@ -48,18 +48,18 @@ func TestBeghilosz(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Beghilosz(tt.args.input); got != tt.want {
+			if got := Encode(tt.args.input); got != tt.want {
 				t.Errorf("Beghilosz() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func BenchmarkBeghilosz(b *testing.B) {
+func BenchmarkEncode(b *testing.B) {
 	for _, bench := range utils.EncodeBenchmarks {
 		b.Run(bench.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				Beghilosz(bench.Text)
+				Encode(bench.Text)
 			}
 		})
 	}

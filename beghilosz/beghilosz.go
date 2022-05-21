@@ -14,23 +14,22 @@ import (
 	"github.com/kirillmorozov/encodor/utils"
 )
 
-// beghiloszReplacer replace all runes according to beghilosz encoding.
-var beghiloszReplacer = strings.NewReplacer(
-	"B", "8",
-	"E", "3",
-	"G", "6",
-	"H", "4",
-	"I", "1",
-	"L", "7",
-	"O", "0",
-	"S", "5",
-	"Z", "2",
-)
-
-// Beghilosz encode text to calculator spelling.
-// Hashtags(words beginning with '#') and mentions(words beginning with '@') are
+// Encode transforms text into calculator spelling.
+//
+// Hashtags(words beginning with `#`) and mentions(words beginning with `@`) are
 // left as is.
-func Beghilosz(text string) string {
+func Encode(text string) string {
+	beghiloszReplacer := strings.NewReplacer(
+		"B", "8",
+		"E", "3",
+		"G", "6",
+		"H", "4",
+		"I", "1",
+		"L", "7",
+		"O", "0",
+		"S", "5",
+		"Z", "2",
+	)
 	text = strings.ToUpper(text)
 	lines := strings.Split(text, "\n")
 	for lineIndex, line := range lines {

@@ -71,7 +71,7 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 		update.Message.Text = "All those moments will be lost in time, like tears in rain."
 	}
 	// BEGHILOSZ encode incomming message
-	encoded_text := beghilosz.Beghilosz(update.Message.Text)
+	encoded_text := beghilosz.Encode(update.Message.Text)
 	// Send the punchline back to Telegram
 	telegramResponseBody, errTelegram := sendTextToTelegramChat(update.Message.Chat.Id, encoded_text)
 	if errTelegram != nil {
