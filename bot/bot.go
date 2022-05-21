@@ -1,4 +1,4 @@
-package encodor
+package bot
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/kirillmorozov/encodor/beghilosz"
 	"go.uber.org/zap"
 )
 
@@ -53,7 +54,7 @@ func parseTelegramRequest(r *http.Request) (*Update, error) {
 func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 	defer logger.Sync() //nolint:errcheck
 	// Parse incoming request
-	var update, err = parseTelegramRequest(r)
+	update, err := parseTelegramRequest(r)
 	if err != nil {
 		logger.Error("Error parsing update",
 			zap.String("severity", "ERROR"),
@@ -69,10 +70,10 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 	if update.Message.Text == startCommand {
 		update.Message.Text = "All those moments will be lost in time, like tears in rain."
 	}
-	//BEGHILOSZ encode incomming message
-	encoded_text := Beghilosz(update.Message.Text)
+	// BEGHILOSZ encode incomming message
+	encoded_text := beghilosz.Encode(update.Message.Text)
 	// Send the punchline back to Telegram
-	var telegramResponseBody, errTelegram = sendTextToTelegramChat(update.Message.Chat.Id, encoded_text)
+	telegramResponseBody, errTelegram := sendTextToTelegramChat(update.Message.Chat.Id, encoded_text)
 	if errTelegram != nil {
 		logger.Error("Error from Telegram",
 			zap.String("response", telegramResponseBody),
@@ -103,7 +104,7 @@ func sendTextToTelegramChat(chatId int, text string) (string, error) {
 		return "", err
 	}
 	defer response.Body.Close()
-	var bodyBytes, errRead = ioutil.ReadAll(response.Body)
+	bodyBytes, errRead := ioutil.ReadAll(response.Body)
 	if errRead != nil {
 		logger.Error("Error in parsing telegram answer",
 			zap.String("severity", "ERROR"),
