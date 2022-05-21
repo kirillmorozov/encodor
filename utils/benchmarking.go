@@ -1,5 +1,7 @@
 package utils
 
+// EncodeBecnhmarks is a standard set of inputs that's used to measure encoding
+// performance.
 var EncodeBenchmarks = []struct {
 	Name string
 	Text string

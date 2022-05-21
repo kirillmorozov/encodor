@@ -1,3 +1,5 @@
+// Package utils contains helper functions that are not directly related to any
+// encoding.
 package utils
 
 import (
