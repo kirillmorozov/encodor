@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/kirillmorozov/encodor/zalgo"
@@ -13,12 +12,17 @@ func init() {
 }
 
 var zalgoCmd = &cobra.Command{
-	Use:   "zalgo",
-	Short: "Encode text using criptic zalgo",
-	Long:  ``,
+	Use:   "zalgo word...",
+	Short: "Turn input words into criptic zalgo text",
+	Long: `Turn input words into criptic zalgo text.
+	
+Zalgo text is digital text that has been modified with combining characters,
+Unicode symbols used to add diacritics above or below letters, to appear
+frightening or glitchy.`,
+	Example: "encodor zalgo Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn",
 	Run: func(cmd *cobra.Command, args []string) {
 		text := strings.Join(args, " ")
 		encoded := zalgo.Encode(text)
-		fmt.Println(encoded)
+		cmd.Println(encoded)
 	},
 }

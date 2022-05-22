@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/kirillmorozov/encodor/beghilosz"
@@ -13,12 +12,19 @@ func init() {
 }
 
 var beghiloszCmd = &cobra.Command{
-	Use:   "beghilosz",
-	Short: "Encode text using calculator spelling",
-	Long:  ``,
+	Use:   "beghilosz word...",
+	Short: "Turn input words into calculator spelling",
+	Long: `Turn input words into calculator spelling.
+
+Calculator spelling is an unintended characteristic of the seven-segments
+display traditionally used by calculators, in which, when read upside-down, the
+digits resemble letters of the Latin alphabet. Each digit may be mapped to one
+or more letters, creating a limited but functional subset of the alphabet,
+sometimes referred to as beghilos (or beghilosz).`,
+	Example: "encodor beghilosz BOOBIES",
 	Run: func(cmd *cobra.Command, args []string) {
 		text := strings.Join(args, " ")
 		encoded := beghilosz.Encode(text)
-		fmt.Println(encoded)
+		cmd.Println(encoded)
 	},
 }

@@ -8,12 +8,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "",
-	Short: "",
-	Long:  "",
-	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-	},
+	Short: "Encodes your input",
 }
 
 func Execute() {
