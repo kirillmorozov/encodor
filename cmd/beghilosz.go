@@ -12,8 +12,9 @@ func init() {
 }
 
 var beghiloszCmd = &cobra.Command{
-	Use:   "beghilosz word...",
-	Short: "Turn input words into calculator spelling",
+	Use:     "beghilosz word...",
+	Aliases: []string{"b"},
+	Short:   "Turn input words into calculator spelling",
 	Long: `Turn input words into calculator spelling.
 
 Calculator spelling is an unintended characteristic of the seven-segments

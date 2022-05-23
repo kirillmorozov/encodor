@@ -12,8 +12,9 @@ func init() {
 }
 
 var zalgoCmd = &cobra.Command{
-	Use:   "zalgo word...",
-	Short: "Turn input words into criptic zalgo text",
+	Use:     "zalgo word...",
+	Aliases: []string{"z"},
+	Short:   "Turn input words into criptic zalgo text",
 	Long: `Turn input words into criptic zalgo text.
 	
 Zalgo text is digital text that has been modified with combining characters,
