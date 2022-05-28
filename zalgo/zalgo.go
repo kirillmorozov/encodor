@@ -67,7 +67,7 @@ func Encode(text string, diacritics int8) (string, error) {
 			if unicode.IsLetter(r) || unicode.IsDigit(r) {
 				for i := int8(0); i < diacritics; i++ {
 					encodedTextBuilder.WriteString(
-						string(randZalgo(highDiacritics) + randZalgo(midDiacritics) + randZalgo(lowDiacritics)),
+						string(randZalgo(highDiacritics)) + string(randZalgo(midDiacritics)) + string(randZalgo(lowDiacritics)),
 					)
 				}
 			}
