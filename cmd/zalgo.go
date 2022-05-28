@@ -12,9 +12,16 @@ const (
 	zalgoShort = "Turn input words into criptic zalgo text"
 	zalgoLong  = `Turn input words into criptic zalgo text.
 
-Zalgo text is digital text that has been modified with combining characters, Unicode symbols used to add diacritics above or below letters, to appear frightening or glitchy.`
+Zalgo text is digital text that has been modified with combining characters,
+Unicode symbols used to add diacritics above or below letters, to appear
+frightening or glitchy.`
 	zalgoExample    = "encodor zalgo -d 3 Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn"
-	diacriticsUsage = `How many diacritics are added to each letter. Should be 1 <= diacritics <= 3`
+	diacriticsUsage = `How many diacritics are added to each letter.
+Should be 1 <= diacritics <= 5`
+)
+
+const (
+	defaultDiacritics = 3
 )
 
 func NewZalgoCmd() *cobra.Command {
@@ -37,6 +44,6 @@ func NewZalgoCmd() *cobra.Command {
 			cmd.Println(encoded)
 		},
 	}
-	zalgoCmd.Flags().Int8P("diacritics", "d", 1, diacriticsUsage)
+	zalgoCmd.Flags().Int8P("diacritics", "d", defaultDiacritics, diacriticsUsage)
 	return zalgoCmd
 }

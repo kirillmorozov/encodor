@@ -15,6 +15,11 @@ import (
 	"github.com/kirillmorozov/encodor/utils"
 )
 
+const (
+	minDiacritics = 1
+	maxDiacritics = 5
+)
+
 var highDiacritics = []rune{
 	'\u030d', '\u030e', '\u0304', '\u0305', '\u033f', '\u0311', '\u0306',
 	'\u0310', '\u0352', '\u0357', '\u0351', '\u0307', '\u0308', '\u030a',
@@ -47,8 +52,8 @@ var lowDiacritics = []rune{
 // Hashtags(words beginning with `#`) and mentions(words beginning with `@`) are
 // left as is.
 func Encode(text string, diacritics int8) (string, error) {
-	if (diacritics < 1) || (diacritics > 3) {
-		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 3")
+	if (diacritics < minDiacritics) || (diacritics > maxDiacritics) {
+		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
 	}
 	words := strings.Fields(text)
 	for wordIndex := range words {
