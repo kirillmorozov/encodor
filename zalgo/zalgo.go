@@ -57,13 +57,12 @@ func Encode(text string, diacritics int8) (string, error) {
 	}
 	var encodedTextBuilder strings.Builder
 	encodedTextBuilder.Grow(len(text))
-	words := strings.Fields(text)
-	for wordIndex := range words {
-		if utils.IsSpecialWord(words[wordIndex]) {
-			encodedTextBuilder.WriteString(words[wordIndex])
+	for _, word := range strings.Fields(text) {
+		if utils.IsSpecialWord(word) {
+			encodedTextBuilder.WriteString(word)
 			continue
 		}
-		encodedTextBuilder.WriteString(encodeWord(words[wordIndex], diacritics))
+		encodedTextBuilder.WriteString(encodeWord(word, diacritics))
 	}
 	return encodedTextBuilder.String(), nil
 }
