@@ -39,7 +39,7 @@ func BenchmarkEncode(b *testing.B) {
 	for _, bench := range utils.EncodeBenchmarks {
 		b.Run(bench.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				Encode(bench.Text, 1)
+				_, _ = Encode(bench.Text, 1)
 			}
 		})
 	}
