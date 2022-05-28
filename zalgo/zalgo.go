@@ -55,32 +55,25 @@ func Encode(text string, diacritics int8) (string, error) {
 	if (diacritics < minDiacritics) || (diacritics > maxDiacritics) {
 		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
 	}
-	words := strings.Fields(text)
-	for wordIndex := range words {
-		if utils.IsSpecialWord(words[wordIndex]) {
+	var encodedTextBuilder strings.Builder
+	encodedTextBuilder.Grow(len(text) * 3 * int(diacritics))
+	for _, word := range strings.Fields(text) {
+		if utils.IsSpecialWord(word) {
+			encodedTextBuilder.WriteString(word)
 			continue
 		}
-		words[wordIndex] = encodeWord(words[wordIndex], diacritics)
-	}
-	return strings.Join(words, " "), nil
-}
-
-func encodeWord(word string, diacritics int8) string {
-	encodedWord := make([]rune, 0, 3*len(word))
-	for _, r := range word {
-		encodedWord = append(encodedWord, r)
-		if unicode.IsLetter(r) || unicode.IsDigit(r) {
-			for i := int8(0); i < diacritics; i++ {
-				encodedWord = append(
-					encodedWord,
-					randZalgo(highDiacritics),
-					randZalgo(midDiacritics),
-					randZalgo(lowDiacritics),
-				)
+		for _, r := range word {
+			encodedTextBuilder.WriteRune(r)
+			if unicode.IsLetter(r) || unicode.IsDigit(r) {
+				for i := int8(0); i < diacritics; i++ {
+					encodedTextBuilder.WriteString(
+						string(randZalgo(highDiacritics) + randZalgo(midDiacritics) + randZalgo(lowDiacritics)),
+					)
+				}
 			}
 		}
 	}
-	return string(encodedWord)
+	return encodedTextBuilder.String(), nil
 }
 
 // randZalgo gets a random char from a zalgo char table
