@@ -62,25 +62,18 @@ func Encode(text string, diacritics int8) (string, error) {
 			encodedTextBuilder.WriteString(word)
 			continue
 		}
-		encodedTextBuilder.WriteString(encodeWord(word, diacritics))
-	}
-	return encodedTextBuilder.String(), nil
-}
-
-func encodeWord(word string, diacritics int8) string {
-	var encodedWordBuilder strings.Builder
-	encodedWordBuilder.Grow(len(word) * 3 * int(diacritics))
-	for _, r := range word {
-		encodedWordBuilder.WriteRune(r)
-		if unicode.IsLetter(r) || unicode.IsDigit(r) {
-			for i := int8(0); i < diacritics; i++ {
-				encodedWordBuilder.WriteRune(randZalgo(highDiacritics))
-				encodedWordBuilder.WriteRune(randZalgo(midDiacritics))
-				encodedWordBuilder.WriteRune(randZalgo(lowDiacritics))
+		for _, r := range word {
+			encodedTextBuilder.WriteRune(r)
+			if unicode.IsLetter(r) || unicode.IsDigit(r) {
+				for i := int8(0); i < diacritics; i++ {
+					encodedTextBuilder.WriteString(
+						string(randZalgo(highDiacritics) + randZalgo(midDiacritics) + randZalgo(lowDiacritics)),
+					)
+				}
 			}
 		}
 	}
-	return encodedWordBuilder.String()
+	return encodedTextBuilder.String(), nil
 }
 
 // randZalgo gets a random char from a zalgo char table
