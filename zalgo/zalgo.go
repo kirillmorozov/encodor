@@ -56,7 +56,7 @@ func Encode(text string, diacritics int8) (string, error) {
 		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
 	}
 	var encodedTextBuilder strings.Builder
-	encodedTextBuilder.Grow(len(text))
+	encodedTextBuilder.Grow(len(text) * 3 * int(diacritics))
 	for _, word := range strings.Fields(text) {
 		if utils.IsSpecialWord(word) {
 			encodedTextBuilder.WriteString(word)
