@@ -55,18 +55,22 @@ func Encode(text string, diacritics int8) (string, error) {
 	if (diacritics < minDiacritics) || (diacritics > maxDiacritics) {
 		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
 	}
+	var encodedTextBuilder strings.Builder
+	encodedTextBuilder.Grow(len(text))
 	words := strings.Fields(text)
 	for wordIndex := range words {
 		if utils.IsSpecialWord(words[wordIndex]) {
+			encodedTextBuilder.WriteString(words[wordIndex])
 			continue
 		}
-		words[wordIndex] = encodeWord(words[wordIndex], diacritics)
+		encodedTextBuilder.WriteString(encodeWord(words[wordIndex], diacritics))
 	}
-	return strings.Join(words, " "), nil
+	return encodedTextBuilder.String(), nil
 }
 
 func encodeWord(word string, diacritics int8) string {
 	var encodedWordBuilder strings.Builder
+	encodedWordBuilder.Grow(len(word) * 3 * int(diacritics))
 	for _, r := range word {
 		encodedWordBuilder.WriteRune(r)
 		if unicode.IsLetter(r) || unicode.IsDigit(r) {
