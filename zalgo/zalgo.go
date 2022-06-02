@@ -7,9 +7,10 @@
 package zalgo
 
 import (
+	"bufio"
 	"errors"
+	"io"
 	"math/rand"
-	"strings"
 	"unicode"
 
 	"github.com/kirillmorozov/encodor/utils"
@@ -51,29 +52,50 @@ var lowDiacritics = []rune{
 //
 // Hashtags(words beginning with `#`) and mentions(words beginning with `@`) are
 // left as is.
-func Encode(text string, diacritics int8) (string, error) {
+func Encode(reader io.Reader, writer io.Writer, diacritics int8) error {
 	if (diacritics < minDiacritics) || (diacritics > maxDiacritics) {
-		return "", errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
+		return errors.New("Incorrect number of diacritics, should be 1 <= diacritics <= 5")
 	}
-	var encodedTextBuilder strings.Builder
-	encodedTextBuilder.Grow(len(text) * 3 * int(diacritics))
-	for _, word := range strings.Fields(text) {
-		if utils.IsSpecialWord(word) {
-			encodedTextBuilder.WriteString(word)
+	input := bufio.NewScanner(reader)
+	input.Split(bufio.ScanWords)
+	output := bufio.NewWriter(writer)
+	defer output.Flush()
+	for input.Scan() {
+		if scanErr := input.Err(); scanErr != nil {
+			return scanErr
+		}
+		word := input.Bytes()
+		if utils.IsSpecialWord(string(word)) {
+			_, writeErr := output.Write(input.Bytes())
+			if writeErr != nil {
+				return writeErr
+			}
 			continue
 		}
-		for _, r := range word {
-			encodedTextBuilder.WriteRune(r)
-			if unicode.IsLetter(r) || unicode.IsDigit(r) {
+		for _, r := range string(word) {
+			_, writeErr := output.WriteRune(r)
+			if writeErr != nil {
+				return writeErr
+			}
+			if unicode.IsLetter(rune(r)) || unicode.IsDigit(rune(r)) {
 				for i := int8(0); i < diacritics; i++ {
-					encodedTextBuilder.WriteString(
-						string(randZalgo(highDiacritics)) + string(randZalgo(midDiacritics)) + string(randZalgo(lowDiacritics)),
-					)
+					_, writeErr := output.WriteRune(randZalgo(highDiacritics))
+					if writeErr != nil {
+						return writeErr
+					}
+					_, writeErr = output.WriteRune(randZalgo(midDiacritics))
+					if writeErr != nil {
+						return writeErr
+					}
+					_, writeErr = output.WriteRune(randZalgo(lowDiacritics))
+					if writeErr != nil {
+						return writeErr
+					}
 				}
 			}
 		}
 	}
-	return encodedTextBuilder.String(), nil
+	return nil
 }
 
 // randZalgo gets a random char from a zalgo char table

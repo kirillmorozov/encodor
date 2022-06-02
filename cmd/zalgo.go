@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"strings"
 
 	"github.com/kirillmorozov/encodor/zalgo"
@@ -23,16 +24,18 @@ Unicode symbols used to add diacritics above or below letters, to appear
 frightening or glitchy.`,
 		Example: "encodor zalgo -d 3 Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn",
 		Run: func(cmd *cobra.Command, args []string) {
-			text := strings.Join(args, " ")
 			strength, flgErr := cmd.Flags().GetInt8("diacritics")
 			if flgErr != nil {
 				cmd.PrintErr(flgErr)
 			}
-			encoded, encodingErr := zalgo.Encode(text, strength)
+			text := strings.Join(args, " ")
+			input := strings.NewReader(text)
+			output := bytes.NewBuffer(make([]byte, len(text)*int(strength)))
+			encodingErr := zalgo.Encode(input, output, strength)
 			if encodingErr != nil {
 				cmd.PrintErr(encodingErr)
 			}
-			cmd.Println(encoded)
+			cmd.Println(output)
 		},
 	}
 	zalgoCmd.Flags().Int8P(

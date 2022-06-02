@@ -1,6 +1,9 @@
 package zalgo
 
 import (
+	"bytes"
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/kirillmorozov/encodor/utils"
@@ -8,28 +11,49 @@ import (
 
 func TestEncode(t *testing.T) {
 	type args struct {
-		text string
+		reader     io.Reader
+		diacritics int8
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name       string
+		args       args
+		wantWriter string
+		wantErr    bool
 	}{
 		{
-			name: "Hashtag are not encoded",
-			args: args{text: "#hashtag"},
-			want: "#hashtag",
+			name:       "Hashtag are not encoded",
+			args:       args{reader: strings.NewReader("#hashtag"), diacritics: 1},
+			wantWriter: "#hashtag",
+			wantErr:    false,
 		},
 		{
-			name: "Usernames are not encoded",
-			args: args{text: "@username"},
-			want: "@username",
+			name:       "Usernames are not encoded",
+			args:       args{reader: strings.NewReader("@username"), diacritics: 1},
+			wantWriter: "@username",
+			wantErr:    false,
+		},
+		{
+			name:       "Diacritics < minDiacritics",
+			args:       args{reader: strings.NewReader("henlo"), diacritics: 0},
+			wantWriter: "",
+			wantErr:    true,
+		},
+		{
+			name:       "Diacritics > maxDiacritics",
+			args:       args{reader: strings.NewReader("henlo"), diacritics: 6},
+			wantWriter: "",
+			wantErr:    true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := Encode(tt.args.text, 1); got != tt.want {
-				t.Errorf("Encode() = %v, want %v", got, tt.want)
+			writer := &bytes.Buffer{}
+			if err := Encode(tt.args.reader, writer, tt.args.diacritics); (err != nil) != tt.wantErr {
+				t.Errorf("Encode() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotWriter := writer.String(); gotWriter != tt.wantWriter {
+				t.Errorf("Encode() = %v, want %v", gotWriter, tt.wantWriter)
 			}
 		})
 	}
@@ -37,10 +61,27 @@ func TestEncode(t *testing.T) {
 
 func BenchmarkEncode(b *testing.B) {
 	for _, bench := range utils.EncodeBenchmarks {
+		r := strings.NewReader(bench.Text)
+		w := bytes.NewBuffer(make([]byte, len(bench.Text)))
 		b.Run(bench.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, _ = Encode(bench.Text, 1)
+				err := Encode(r, w, 5)
+				if err != nil {
+					b.Fatal("Encode returned an error")
+				}
 			}
 		})
 	}
+}
+
+func FuzzEncode(f *testing.F) {
+	f.Add("zalgo", int8(5))
+	f.Fuzz(func(t *testing.T, input string, diacritics int8) {
+		r := strings.NewReader(input)
+		var w bytes.Buffer
+		err := Encode(r, &w, diacritics)
+		if err != nil && w.String() != "" {
+			t.Errorf("%q, %v", err, w.String())
+		}
+	})
 }
