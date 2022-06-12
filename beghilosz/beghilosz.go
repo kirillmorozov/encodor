@@ -14,36 +14,36 @@ import (
 	"github.com/kirillmorozov/encodor/utils"
 )
 
-// Encode transforms text into calculator spelling.
+var beghiloszReplacer = strings.NewReplacer(
+	"B", "8",
+	"E", "3",
+	"G", "6",
+	"H", "4",
+	"I", "1",
+	"L", "7",
+	"O", "0",
+	"S", "5",
+	"Z", "2",
+)
+
+// Encode encodes text into calculator spelling.
 //
-// Hashtags(words beginning with `#`) and mentions(words beginning with `@`) are
+// Special words(as determined by utils.IsSpecialWord) are
 // left as is.
 func Encode(text string) string {
-	beghiloszReplacer := strings.NewReplacer(
-		"B", "8",
-		"E", "3",
-		"G", "6",
-		"H", "4",
-		"I", "1",
-		"L", "7",
-		"O", "0",
-		"S", "5",
-		"Z", "2",
-	)
 	text = strings.ToUpper(text)
-	lines := strings.Split(text, "\n")
-	for lineIndex, line := range lines {
-		words := strings.Fields(line)
-		for wordIndex, word := range words {
-			if !utils.IsSpecialWord(word) {
-				word = beghiloszReplacer.Replace(word)
-				word = utils.ReverseString(word)
-			}
-			words[wordIndex] = word
+	words := strings.Fields(text)
+	var builder strings.Builder
+	builder.Grow(len(text))
+	for i := len(words) - 1; i >= 0; i-- {
+		if !utils.IsSpecialWord(words[i]) {
+			words[i] = beghiloszReplacer.Replace(words[i])
+			words[i] = utils.ReverseString(words[i])
 		}
-		words = utils.ReverseStringSlice(words)
-		lines[lineIndex] = strings.Join(words, " ")
+		builder.WriteString(words[i])
+		if i != 0 {
+			builder.WriteString(" ")
+		}
 	}
-	lines = utils.ReverseStringSlice(lines)
-	return strings.Join(lines, "\n")
+	return builder.String()
 }
