@@ -3,27 +3,27 @@
 package utils
 
 import (
-	"strings"
+	"bytes"
 )
 
 // IsSpecialWord return true if word is a hashtag or a username.
-func IsSpecialWord(word string) bool {
-	isHashtag := strings.HasPrefix(word, "#")
-	isUsername := strings.HasPrefix(word, "@")
+func IsSpecialWord(word []byte) bool {
+	isHashtag := bytes.HasPrefix(word, []byte("#"))
+	isUsername := bytes.HasPrefix(word, []byte("@"))
 	return isHashtag || isUsername
 }
 
-// ReverseString reverse rune order in str.
-func ReverseString(str string) string {
-	rns := []rune(str)
-	for i, j := 0, len(rns)-1; i < j; i, j = i+1, j-1 {
-		rns[i], rns[j] = rns[j], rns[i]
+// ReverseLetters reverse runes order in buf.
+func ReverseLetters(buf []byte) []byte {
+	rns := bytes.Runes(buf)
+	for i := 0; i < len(rns)/2; i++ {
+		rns[i], rns[len(rns)-1-i] = rns[len(rns)-1-i], rns[i]
 	}
-	return string(rns)
+	return []byte(string(rns))
 }
 
-// ReverseStringSlice reverse strings order in slice.
-func ReverseStringSlice(slice []string) []string {
+// ReverseLines reverse lines order in slice of lines.
+func ReverseLines(slice [][]byte) [][]byte {
 	for i := 0; i < len(slice)/2; i++ {
 		slice[i], slice[len(slice)-1-i] = slice[len(slice)-1-i], slice[i]
 	}
