@@ -40,11 +40,11 @@ func TestEncode(t *testing.T) {
 			args: args{"Sentence with a #hashtag"},
 			want: "#HASHTAG A 4T1W 3CN3TN35",
 		},
-		// {
-		// 	name: "Multiline text",
-		// 	args: args{"Line 1\nLine 2"},
-		// 	want: "2 3N17\n1 3N17",
-		// },
+		{
+			name: "Multiline text",
+			args: args{"Line 1\nLine 2"},
+			want: "2 3N17\n1 3N17",
+		},
 		{
 			name: "Cyrilic",
 			args: args{"привет"},

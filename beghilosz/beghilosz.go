@@ -32,7 +32,7 @@ var beghiloszReplacer = strings.NewReplacer(
 // left as is.
 func Encode(text string) string {
 	text = strings.ToUpper(text)
-	words := strings.Fields(text)
+	words := strings.Split(text, " ")
 	var builder strings.Builder
 	builder.Grow(len(text))
 	for i := len(words) - 1; i >= 0; i-- {
