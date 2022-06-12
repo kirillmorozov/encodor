@@ -21,11 +21,3 @@ func ReverseString(str string) string {
 	}
 	return string(rns)
 }
-
-// ReverseStringSlice reverse strings order in slice.
-func ReverseStringSlice(slice []string) []string {
-	for i := 0; i < len(slice)/2; i++ {
-		slice[i], slice[len(slice)-1-i] = slice[len(slice)-1-i], slice[i]
-	}
-	return slice
-}

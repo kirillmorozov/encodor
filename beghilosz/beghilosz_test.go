@@ -45,6 +45,11 @@ func TestEncode(t *testing.T) {
 			args: args{"Line 1\nLine 2"},
 			want: "2 3N17\n1 3N17",
 		},
+		{
+			name: "Cyrilic",
+			args: args{"привет"},
+			want: "ТЕВИРП",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -58,6 +63,7 @@ func TestEncode(t *testing.T) {
 func BenchmarkEncode(b *testing.B) {
 	for _, bench := range utils.EncodeBenchmarks {
 		b.Run(bench.Name, func(b *testing.B) {
+			b.SetBytes(int64(len(bench.Text)))
 			for i := 0; i < b.N; i++ {
 				Encode(bench.Text)
 			}
