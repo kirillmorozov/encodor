@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"strings"
 
 	"github.com/kirillmorozov/encodor/beghilosz"
@@ -22,8 +23,13 @@ sometimes referred to as beghilos (or beghilosz).`,
 		Example: "encodor beghilosz BOOBIES",
 		Run: func(cmd *cobra.Command, args []string) {
 			text := strings.Join(args, " ")
-			encoded := beghilosz.Encode(text)
-			cmd.Println(encoded)
+			input := strings.NewReader(text)
+			output := bytes.NewBuffer(make([]byte, len(text)))
+			encodeErr := beghilosz.Encode(input, output)
+			if encodeErr != nil {
+				cmd.PrintErr(encodeErr)
+			}
+			cmd.Println(output)
 		},
 	}
 }

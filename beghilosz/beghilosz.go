@@ -9,41 +9,73 @@
 package beghilosz
 
 import (
-	"strings"
+	"bufio"
+	"bytes"
+	"io"
 
 	"github.com/kirillmorozov/encodor/utils"
 )
+
+// beghiloszMapper returns a digit that corresponds to a given rune in a
+// calculator spelling or the rune itself.
+func beghiloszMapper(r rune) rune {
+	switch r {
+	case 'B':
+		return '8'
+	case 'E':
+		return '3'
+	case 'G':
+		return '6'
+	case 'H':
+		return '4'
+	case 'I':
+		return '1'
+	case 'L':
+		return '7'
+	case 'O':
+		return '0'
+	case 'S':
+		return '5'
+	case 'Z':
+		return '2'
+	default:
+		return r
+	}
+}
 
 // Encode transforms text into calculator spelling.
 //
 // Hashtags(words beginning with `#`) and mentions(words beginning with `@`) are
 // left as is.
-func Encode(text string) string {
-	beghiloszReplacer := strings.NewReplacer(
-		"B", "8",
-		"E", "3",
-		"G", "6",
-		"H", "4",
-		"I", "1",
-		"L", "7",
-		"O", "0",
-		"S", "5",
-		"Z", "2",
-	)
-	text = strings.ToUpper(text)
-	lines := strings.Split(text, "\n")
-	for lineIndex, line := range lines {
-		words := strings.Fields(line)
-		for wordIndex, word := range words {
-			if !utils.IsSpecialWord(word) {
-				word = beghiloszReplacer.Replace(word)
-				word = utils.ReverseString(word)
-			}
-			words[wordIndex] = word
+func Encode(reader io.Reader, writer io.Writer) error {
+	lineScanner := bufio.NewScanner(reader)
+	lineScanner.Split(bufio.ScanLines)
+	var line [][]byte
+	var lines [][]byte
+	// Encode
+	for lineScanner.Scan() {
+		if scanErr := lineScanner.Err(); scanErr != nil {
+			return scanErr
 		}
-		words = utils.ReverseStringSlice(words)
-		lines[lineIndex] = strings.Join(words, " ")
+		line = nil
+		wordScanner := bufio.NewScanner(bytes.NewReader(lineScanner.Bytes()))
+		wordScanner.Split(bufio.ScanWords)
+		for wordScanner.Scan() {
+			if scanErr := wordScanner.Err(); scanErr != nil {
+				return scanErr
+			}
+			word := bytes.ToUpper(wordScanner.Bytes())
+			if utils.IsSpecialWord(word) {
+				line = append(line, utils.ReverseLetters(word))
+			} else {
+				line = append(line, bytes.Map(beghiloszMapper, word))
+			}
+		}
+		lines = append(lines, utils.ReverseLetters(bytes.Join(line, []byte(" "))))
 	}
-	lines = utils.ReverseStringSlice(lines)
-	return strings.Join(lines, "\n")
+	lines = utils.ReverseLines(lines)
+	if _, writeErr := writer.Write(bytes.Join(lines, []byte("\n"))); writeErr != nil {
+		return writeErr
+	}
+	return nil
 }
