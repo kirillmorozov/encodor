@@ -68,11 +68,11 @@ func TestEncode(t *testing.T) {
 
 func BenchmarkEncode(b *testing.B) {
 	for _, bench := range utils.EncodeBenchmarks {
-		r := strings.NewReader(bench.Text)
-		w := bytes.NewBuffer(make([]byte, len(bench.Text)))
 		b.Run(bench.Name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_ = Encode(r, w)
+				r := bytes.NewReader(bench.Text)
+				var buf bytes.Buffer
+				_ = Encode(r, &buf)
 			}
 		})
 	}
