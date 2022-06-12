@@ -65,7 +65,7 @@ func Encode(reader io.Reader, writer io.Writer, diacritics int8) error {
 			return scanErr
 		}
 		word := input.Bytes()
-		if utils.IsSpecialWord(string(word)) {
+		if utils.IsSpecialWord(word) {
 			_, writeErr := output.Write(input.Bytes())
 			if writeErr != nil {
 				return writeErr
